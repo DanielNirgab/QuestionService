@@ -1,24 +1,22 @@
 package serviceTests;
 
-import exceptions.NoQuestionsAddedException;
 import exceptions.QuestionNotFoundException;
 import model.Question;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import service.JavaQuestionServiceImpl;
+import service.JavaQuestionService;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static constants.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JavaQuestionServiceTests {
-    private JavaQuestionServiceImpl out;
+    private JavaQuestionService out = new JavaQuestionService();
 
-    @BeforeEach
-    private void initialize(){
-        out = new JavaQuestionServiceImpl();
+    @AfterEach
+    private void cleanOutList() {
+        out = null;
     }
 
     @Test
@@ -36,10 +34,11 @@ public class JavaQuestionServiceTests {
 
     @Test
     void shouldReturnCollectionWithoutRemovedQuestion() {
+        System.out.println(out.toString());
         out.add(CORRECT_STRING_QUESTION, CORRECT_STRING_ANSWER);
         out.add(new Question("Q1", "A1"));
-        assertEquals(CORRECT_QUESTION, out.remove(CORRECT_QUESTION));
-        assertThrows(QuestionNotFoundException.class, () -> out.remove(CORRECT_QUESTION));
+        assertEquals(CORRECT_STRING_QUESTION, out.remove(CORRECT_STRING_QUESTION));
+        assertThrows(QuestionNotFoundException.class, () -> out.remove(CORRECT_STRING_QUESTION));
         assertFalse(out.getAll().contains(CORRECT_QUESTION));
     }
 

@@ -9,25 +9,25 @@ import java.util.*;
 @Service
 public class ExaminerServiceImpl implements ExaminerService {
 
-    private final List<QuestionService> questionServices;
+    private final QuestionService questionService;
 
-    public ExaminerServiceImpl(List<QuestionService> questionServices) {
-        this.questionServices = questionServices;
+    public ExaminerServiceImpl(QuestionService questionService) {
+        this.questionService = questionService;
     }
+    Random random = new Random();
 
     @Override
     public Collection<Question> getQuestions(int amount) {
         Set<Question> questionSet = new HashSet<>();
-        if (amount <= 0) {
+        if (amount <= 0 || amount > questionService.size()+1) {
             throw new RequestedQuantityExceededException();
         }
-        Random random = new Random();
         while (questionSet.size() < amount) {
             int digitForChange = random.nextInt(2);
-            if (digitForChange == 0 && questionServices.get(0).getAll().size() > 0 ){
-                questionSet.add(questionServices.get(0).getRandomQuestion());
+            if (digitForChange == 0 && questionService.size() > 0 ){
+                questionSet.add(questionService.getRandomQuestion());
             } else {
-                questionSet.add(questionServices.get(0).getRandomQuestion());
+                questionSet.add(questionService.getRandomQuestion());
             }
         }
         return Collections.unmodifiableCollection(questionSet);

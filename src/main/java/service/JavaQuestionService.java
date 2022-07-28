@@ -7,11 +7,14 @@ import org.springframework.stereotype.Service;
 import model.Question;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class JavaQuestionServiceImpl implements QuestionService  {
+public class JavaQuestionService implements QuestionService  {
 
    private final Set<Question> questions = new HashSet<>();
+
+    Random random = new Random();
 
     @Override
     public Question add(String question, String answer) {
@@ -29,12 +32,15 @@ public class JavaQuestionServiceImpl implements QuestionService  {
     }
 
     @Override
-    public Question remove(Question question) {
-        initQuestion(question);
-        if (!questions.contains(question)) {
+    public String remove(String question) {
+        Map<String, List<Question>> questionMap = questions.stream()
+                .filter(question1 -> question1.getQuestion().contains(question))
+                .collect(Collectors.groupingBy(Question::getQuestion, Collectors.toList()));
+
+        if (!questionMap.containsKey(question)) {
             throw new QuestionNotFoundException();
         }
-        questions.remove(question);
+        questions.remove(questionMap.get(question).get(0));
         return question;
     }
 
@@ -46,8 +52,6 @@ public class JavaQuestionServiceImpl implements QuestionService  {
 
     @Override
     public Question getRandomQuestion() {
-        noElementsAdded();
-        Random random = new Random();
         List<Question> questionsArrayList = new ArrayList<>(this.getAll());
         return questionsArrayList.get(random.nextInt(questionsArrayList.size()));
     }

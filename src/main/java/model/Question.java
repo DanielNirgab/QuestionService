@@ -3,7 +3,6 @@ package model;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
-@Component
 public class Question {
     private String question;
     private String answer;
